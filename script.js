@@ -1,5 +1,5 @@
 // Simple API URL definition
-const scriptURL = "https://script.google.com/macros/s/AKfycbw6DVG7jk7Py6nlGMVH5UX251rM4ZD7MHeKQ2-rbcY19A3_hkuGAtYREZaxsb3qqxs/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbyXwq4eRIHmV9t1BedEls9O-XMJXm9Se_eYr01e5-Mn11bFW-mBC-0NIfr0vMcgh7FE/exec";
 
 let formHasData = false;
 let documents = [];
