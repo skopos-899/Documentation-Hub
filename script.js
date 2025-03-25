@@ -1,6 +1,6 @@
 let formHasData = false;
 let documents = [];
-const scriptURL = "https://script.google.com/macros/s/AKfycbw6DVG7jk7Py6nlGMVH5UX251rM4ZD7MHeKQ2-rbcY19A3_hkuGAtYREZaxsb3qqxs/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbzqH_Mkd2U_FIkRmn5D3KXiTR7GEMqQFyFr_OOBXTwL-BcfoJQsm3YKtAhcQg3Ad5L3/exec";
 let activeCategory = "all";
 let searchQuery = "";
 
