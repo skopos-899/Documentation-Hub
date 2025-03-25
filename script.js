@@ -1,6 +1,8 @@
+// Simple API URL definition
+const scriptURL = "https://script.google.com/macros/s/AKfycbw6DVG7jk7Py6nlGMVH5UX251rM4ZD7MHeKQ2-rbcY19A3_hkuGAtYREZaxsb3qqxs/exec";
+
 let formHasData = false;
 let documents = [];
-const scriptURL = "https://script.google.com/macros/s/AKfycbzqH_Mkd2U_FIkRmn5D3KXiTR7GEMqQFyFr_OOBXTwL-BcfoJQsm3YKtAhcQg3Ad5L3/exec";
 let activeCategory = "all";
 let searchQuery = "";
 
@@ -304,17 +306,6 @@ async function submitDocument() {
         el.classList.remove("highlight");
     });
     
-    // Honeypot check - if the invisible field is filled, it's likely a bot
-    if (document.getElementById("website").value !== "") {
-        console.log("Bot submission detected");
-        // Pretend submission was successful but don't actually submit
-        setTimeout(() => {
-            alert("📄 Your document has been added successfully! Wait till the admin approve it.");
-            closeForm();
-        }, 1500);
-        return;
-    }
-
     // Required fields validation
     const requiredFields = ["docTitle", "docDescription", "docLink", "docCategory", "docPublisher"];
     let isValid = true;
@@ -363,46 +354,37 @@ async function submitDocument() {
     // Show loading indicator
     document.getElementById("loading").style.display = "block";
     
-    // Check for duplicate URL
     try {
-        const isDuplicate = await checkDuplicateUrl(docLink);
-        if (isDuplicate) {
-            document.getElementById("docLink").classList.add("highlight");
-            errorMessage.innerHTML = "This URL already exists in our documentation.";
-            errorMessage.style.display = "block";
-            document.getElementById("loading").style.display = "none";
-            return;
-        }
-    
-        // If all validations pass, prepare form data
-        const docTitle = sanitizeInput(document.getElementById("docTitle").value);
-        const docCategory = sanitizeInput(document.getElementById("docCategory").value);
-        const docPublisher = sanitizeInput(document.getElementById("docPublisher").value);
-        const sanitizedDescription = sanitizeInput(docDescription);
-        const sanitizedEmail = sanitizeInput(docEmail || "");
-
+        // Prepare form data - simplified to ensure it works
         const formData = new FormData();
-        formData.append("docTitle", docTitle);
-        formData.append("docDescription", sanitizedDescription);
-        formData.append("docLink", docLink); // URLs don't need sanitization in the same way
-        formData.append("docCategory", docCategory);
-        formData.append("docPublisher", docPublisher);
-        formData.append("docEmail", sanitizedEmail); // Handle empty email
+        formData.append("docTitle", document.getElementById("docTitle").value);
+        formData.append("docDescription", document.getElementById("docDescription").value);
+        formData.append("docLink", docLink);
+        formData.append("docCategory", document.getElementById("docCategory").value);
+        formData.append("docPublisher", document.getElementById("docPublisher").value);
+        formData.append("docEmail", docEmail || ""); // Handle empty email
 
-        // Submit the form
+        console.log("Submitting data to: " + scriptURL);
+        
+        // Submit the form - with basic error handling
         const response = await fetch(scriptURL, {
             method: "POST",
             body: formData
         });
         
-        if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
+        const responseText = await response.text();
+        console.log("Response received:", responseText);
+        
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (e) {
+            console.error("Failed to parse response as JSON:", e);
+            throw new Error("Invalid response from server. Please try again later.");
         }
         
-        const data = await response.json();
-        
         if (data.result === "success") {
-            alert("📄 Your document has been added successfully! Wait till the admin approve it.");
+            alert("📄 Your document has been added successfully! Wait till the admin approves it.");
             closeForm();
             
             // Refresh documents list
