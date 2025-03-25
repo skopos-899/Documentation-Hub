@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        <span class="sidebar-toggle" onclick="location.reload()">Home</span>
+        <button onclick="showForm()">Add Document</button>
+    </div>
+
+    <div class="main-content">
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search documents...">
+                <i>🔍</i>
+            </div>
+            <div class="category-filter" id="categoryFilter">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="Web Development">Web Development</button>
+                <button class="category-btn" data-category="Programming Languages">Programming Languages</button>
+                <button class="category-btn" data-category="AI & Machine Learning">AI & ML</button>
+                <button class="category-btn" data-category="Cyber Security">Cyber Security</button>
+                <button class="category-btn" data-category="Data Structures">Data Structures</button>
+                <button class="category-btn" data-category="Algorithms">Algorithms</button>
+                <button class="category-btn" data-category="Database Systems">Database Systems</button>
+                <button class="category-btn" data-category="Computer Networks">Computer Networks</button>
+                <button class="category-btn" data-category="Operating Systems">Operating Systems</button>
+            </div>
+        </div>
+
+        <div class="document-grid" id="documentGrid">
+            <div class="data-loading" id="dataLoading">
+                <div class="loading-spinner"></div>
+                <p>Loading documents...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Documentation Form -->
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-popup">
+            <div class="close-btn" onclick="closeForm()">✖</div>
+            <h3>Add New Documentation</h3>
+            <input type="text" id="docTitle" name="docTitle" placeholder="Title" oninput="trackChanges()">
+            <textarea id="docDescription" name="docDescription" placeholder="Description (max 250 chars)" maxlength="250" oninput="trackChanges()"></textarea>
+            <input type="url" id="docLink" name="docLink" placeholder="Documentation URL" oninput="trackChanges()">
+            <select id="docCategory" name="docCategory" onchange="trackChanges()">
+                <option value="">Select Category</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Programming Languages">Programming Languages</option>
+                <option value="AI & Machine Learning">AI & Machine Learning</option>
+                <option value="Cyber Security">Cyber Security</option>
+                <option value="Data Structures">Data Structures</option>
+                <option value="Algorithms">Algorithms</option>
+                <option value="Database Systems">Database Systems</option>
+                <option value="Computer Networks">Computer Networks</option>
+                <option value="Operating Systems">Operating Systems</option>
+            </select>
+            <input type="text" id="docPublisher" name="docPublisher" placeholder="Your Name" oninput="trackChanges()">
+            <input type="email" id="docEmail" name="docEmail" placeholder="Your Email! Get notified when your document is published" oninput="trackChanges()">
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Processing...</p>
+            </div>
+            <span class="error-message" id="errorMessage">All fields are required!</span>
+            <button onclick="submitDocument()">Submit</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
