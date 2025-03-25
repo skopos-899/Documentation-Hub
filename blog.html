@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Hub - Blog</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            min-width: 375px;
+            line-height: 1.6;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: #2C3E50;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-right: 20px;
+        }
+        
+        .top-bar a:hover {
+            color: #3498db;
+        }
+        
+        .dark-mode-toggle {
+            margin-right: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        .dark-mode-toggle i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+
+        /* Blog Content */
+        .blog-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .blog-title {
+            font-size: 2.5rem;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+        
+        .blog-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .blog-content {
+            margin-bottom: 50px;
+        }
+        
+        .blog-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #2C3E50;
+        }
+        
+        .feature-description {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 50px 0;
+            padding: 40px;
+            background-color: #3498db;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-description {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            font-size: 1.1rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: white;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+        
+        .cta-button:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Categories Section */
+        .categories-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .category-badge {
+            background-color: #f1f1f1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #2C3E50;
+            transition: all 0.3s;
+        }
+        
+        .category-badge:hover {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #2C3E50;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        
+        body.dark-mode .blog-title,
+        body.dark-mode .section-title,
+        body.dark-mode .feature-title {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .blog-subtitle,
+        body.dark-mode .feature-description {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .feature-card {
+            background-color: #2d2d2d;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        body.dark-mode .category-badge {
+            background-color: #3d3d3d;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .category-badge:hover {
+            background-color: #3498db;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .blog-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div>
+            <a href="index.html">Home</a>
+            <a href="blog.html">Blog</a>
+        </div>
+        <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+            <i id="darkModeIcon">🌙</i>
+            <span id="darkModeText">Dark Mode</span>
+        </div>
+    </div>
+
+    <div class="blog-container">
+        <div class="blog-header">
+            <h1 class="blog-title">Welcome to Documentation Hub</h1>
+            <p class="blog-subtitle">Your open-source gateway to computer science knowledge, built by the community, for the community.</p>
+        </div>
+        
+        <div class="blog-content">
+            <div class="blog-section">
+                <h2 class="section-title">About Documentation Hub</h2>
+                <p>Documentation Hub is an open-source platform designed to organize and share the best computer science documentation resources from around the web. We believe that knowledge should be freely accessible to everyone, regardless of their background or location.</p>
+                <p>Our mission is simple: create a central hub where programmers, developers, and tech enthusiasts can discover high-quality documentation for any computer science topic they're interested in learning about.</p>
+                <p>The beauty of Documentation Hub lies in its community-driven approach. Anyone can contribute by submitting links to valuable documentation resources, helping to build a comprehensive collection that benefits everyone in the tech community.</p>
+            </div>
+            
+            <div class="blog-section">
+                <h2 class="section-title">Key Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3 class="feature-title">Community-Powered</h3>
+                        <p class="feature-description">Anyone can contribute documentation links. Submit resources you've found helpful and share knowledge with the global tech community.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">Easy Discovery</h3>
+                        <p class="feature-description">Find exactly what you need with powerful search and filtering capabilities, organized by categories for efficient browsing.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🌙</div>
+                        <h3 class="feature-title">Dark Mode Support</h3>
+                        <p class="feature-description">Reduce eye strain with our elegant dark mode option. Toggle between light and dark themes with a single click.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Mobile Responsive</h3>
+                        <p class="feature-description">Access Documentation Hub from any device. Our responsive design ensures a seamless experience on desktops, tablets, and phones.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3 class="feature-title">Smart Sorting</h3>
+                        <p class="feature-description">Organize documentation resources by newest, oldest, title, or publisher to quickly find what's most relevant to you.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">👁️</div>
+                        <h3 class="feature-title">Detailed View</h3>
+                        <p class="feature-description">View comprehensive details about each resource before visiting, saving you time and helping you find the best documentation.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="blog-section">
+                <h2 class="section-title">Browse by Categories</h2>
+                <p>Documentation Hub organizes resources into specific categories, making it easy to find exactly what you're looking for:</p>
+                
+                <div class="categories-list">
+                    <span class="category-badge">Web Development</span>
+                    <span class="category-badge">Programming Languages</span>
+                    <span class="category-badge">AI & Machine Learning</span>
+                    <span class="category-badge">Cyber Security</span>
+                    <span class="category-badge">Cloud Computing</span>
+                    <span class="category-badge">DevOps</span>
+                    <span class="category-badge">Blockchain</span>
+                    <span class="category-badge">Mobile Development</span>
+                    <span class="category-badge">Data Science</span>
+                </div>
+                
+                <p style="margin-top: 20px;">Each category contains carefully curated resources to help you master that specific field. With easy navigation and a clean interface, finding the right documentation has never been easier.</p>
+            </div>
+            
+            <div class="cta-section">
+                <h2 class="cta-title">Contribute to Documentation Hub</h2>
+                <p class="cta-description">Help build the world's most comprehensive computer science documentation library. Share your favorite resources with the community today!</p>
+                <a href="index.html" class="cta-button">Add a Document</a>
+            </div>
+            
+            <div class="blog-section">
+                <h2 class="section-title">How it Works</h2>
+                <p>Using Documentation Hub is simple:</p>
+                <ol>
+                    <li><strong>Browse:</strong> Explore our growing collection of resources by category or use the search function to find specific documentation.</li>
+                    <li><strong>Discover:</strong> View details about each resource, including descriptions, publisher information, and when it was added.</li>
+                    <li><strong>Contribute:</strong> Add new documentation by clicking the "Add Document" button, filling out a simple form, and submitting for review.</li>
+                    <li><strong>Share:</strong> Help grow our community by sharing Documentation Hub with fellow developers and tech enthusiasts.</li>
+                </ol>
+                <p>All submitted resources undergo a brief review process to ensure quality before being added to the public collection. Our goal is to maintain a high standard of technical documentation that truly benefits the community.</p>
+            </div>
+            
+            <div class="blog-section">
+                <h2 class="section-title">Open Source Philosophy</h2>
+                <p>Documentation Hub embraces the open-source ethos in every aspect. We believe that:</p>
+                <ul>
+                    <li>Knowledge should be freely accessible to everyone</li>
+                    <li>Community collaboration produces the best results</li>
+                    <li>Technological progress accelerates when we share resources</li>
+                    <li>Diverse perspectives enhance the quality of our collection</li>
+                </ul>
+                <p>By contributing to Documentation Hub, you're helping to create a valuable resource that benefits developers worldwide, from beginners just starting their journey to seasoned professionals looking to expand their knowledge.</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+            </div>
+            <p class="copyright">© 2023 Documentation Hub. An open-source project.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            updateDarkModeUI(isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        }
+
+        function updateDarkModeUI(isDarkMode) {
+            const icon = document.getElementById('darkModeIcon');
+            const text = document.getElementById('darkModeText');
+            
+            if (isDarkMode) {
+                icon.textContent = '☀️';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = 'Dark Mode';
+            }
+        }
+
+        // Check for saved dark mode preference on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            const darkModePref = localStorage.getItem('darkMode');
+            if (darkModePref === 'enabled') {
+                document.body.classList.add('dark-mode');
+                updateDarkModeUI(true);
+            }
+        });
+    </script>
+
+</body>
+</html>

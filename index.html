@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Hub</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            min-width: 375px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: #2C3E50;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-right: 20px;
+        }
+        
+        .top-bar a:hover {
+            color: #3498db;
+        }
+        
+        .top-bar button {
+            padding: 10px 15px;
+            background-color: #27AE60;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        .top-bar button:hover {
+            background-color: #2ECC71;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+        .top-bar button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
+        }
+        .top-bar button::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        /* Form Popup */
+        .form-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .form-popup {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transform: translateY(0);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .form-popup h3 {
+            color: #2C3E50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+        
+        .form-group {
+            width: 100%;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .form-popup input, 
+        .form-popup textarea, 
+        .form-popup select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        .form-popup input:focus, 
+        .form-popup textarea:focus, 
+        .form-popup select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-popup input.highlight, 
+        .form-popup textarea.highlight, 
+        .form-popup select.highlight {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+        
+        .form-popup label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .char-count {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            font-size: 12px;
+            color: #888;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .char-count.warning {
+            color: #e67e22;
+        }
+        
+        .char-count.danger {
+            color: #e74c3c;
+        }
+        
+        .form-popup button {
+            width: 100%;
+            margin: 15px 0 0;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            background: #27AE60;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .form-popup button:hover {
+            background: #2ECC71;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+        }
+        
+        .form-popup button:active {
+            transform: translateY(0);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+            transition: 0.3s;
+            background: none;
+            border: none;
+            padding: 0;
+            width: auto;
+            height: auto;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .error-message {
+            display: none;
+            color: #e74c3c;
+            font-size: 14px;
+            margin: 10px 0;
+            padding: 8px 12px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 15px 0;
+            width: 100%;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+            color: #27AE60;
+            font-weight: bold;
+        }
+        
+        body.dark-mode .form-popup {
+            background-color: #2d2d2d;
+        }
+        
+        body.dark-mode .form-popup h3 {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-popup label {
+            color: #aaa;
+        }
+        
+        body.dark-mode .loading-spinner {
+            border: 3px solid #444;
+            border-top: 3px solid #3498db;
+        }
+
+        /* Document Grid Styles */
+        .main-content {
+            padding: 20px;
+        }
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-box {
+            flex-grow: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .search-box input:focus {
+            border-color: #3498db;
+            box-shadow: 0 2px 10px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 16px;
+        }
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .category-btn {
+            padding: 8px 15px;
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .category-btn:hover, .category-btn.active {
+            background-color: #2C3E50;
+            color: white;
+        }
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .document-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            height: 200px;
+            cursor: pointer;
+        }
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .card-content {
+            padding: 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .card-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #2C3E50;
+        }
+        .card-description {
+            font-size: 14px;
+            color: #666;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        
+        .card-btn {
+            flex: 1;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .card-btn.details {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .card-btn.details:hover {
+            background-color: #ddd;
+        }
+        
+        .card-btn.visit {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .card-btn.visit:hover {
+            background-color: #2980b9;
+        }
+        
+        body.dark-mode .card-btn.details {
+            background-color: #444;
+            color: #ddd;
+        }
+        
+        body.dark-mode .card-btn.details:hover {
+            background-color: #555;
+        }
+        .card-publisher {
+            font-weight: bold;
+        }
+        .card-date {
+            font-style: italic;
+        }
+        .card-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .document-card:hover .card-preview {
+            opacity: 1;
+        }
+        .preview-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .preview-description {
+            font-size: 14px;
+            margin-bottom: 15px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .preview-link {
+            align-self: flex-end;
+            color: #3498db;
+            text-decoration: underline;
+        }
+        .category-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 50px 20px;
+            color: #666;
+        }
+        .empty-state-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        .empty-state-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .empty-state-button {
+            background-color: #27AE60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .empty-state-button:hover {
+            background-color: #2ECC71;
+        }
+
+        /* Sort Dropdown Styles */
+        .sort-dropdown select {
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .sort-dropdown select:hover,
+        .sort-dropdown select:focus {
+            border-color: #3498db;
+        }
+        
+        body.dark-mode .sort-dropdown select {
+            background-color: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        
+        /* Add responsive styling for sort dropdown */
+        @media (max-width: 768px) {
+            .filter-bar > div {
+                width: 100%;
+            }
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                max-width: 100%;
+            }
+            .category-filter {
+                margin-top: 10px;
+                justify-content: center;
+            }
+            .document-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            .dark-mode-toggle {
+                margin-right: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-popup {
+                width: 90%;
+                padding: 15px;
+            }
+            .top-bar input {
+                width: 150px;
+            }
+            .document-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-box input {
+                padding: 8px 10px 8px 35px;
+            }
+            .top-bar > div {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+            .dark-mode-toggle {
+                margin-bottom: 8px;
+            }
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        
+        body.dark-mode .document-card {
+            background-color: #2d2d2d;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        body.dark-mode .card-title {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .card-description {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .card-footer {
+            color: #999;
+            border-top: 1px solid #444;
+        }
+        
+        body.dark-mode .category-btn {
+            background-color: #3d3d3d;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .category-btn:hover, 
+        body.dark-mode .category-btn.active {
+            background-color: #4a90e2;
+            color: white;
+        }
+        
+        body.dark-mode .search-box input {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+        
+        body.dark-mode .search-box i {
+            color: #999;
+        }
+        
+        body.dark-mode .form-popup {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-popup input,
+        body.dark-mode .form-popup textarea,
+        body.dark-mode .form-popup select {
+            background-color: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        
+        .dark-mode-toggle {
+            margin-right: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        .dark-mode-toggle i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+
+        /* Document Modal */
+        .document-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+        
+        .document-modal {
+            background: white;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+        
+        .document-modal-header {
+            padding: 20px;
+            background-color: #2C3E50;
+            color: white;
+            position: relative;
+        }
+        
+        .document-modal-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-right: 30px;
+        }
+        
+        .document-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            transition: color 0.3s;
+        }
+        
+        .document-modal-close:hover {
+            color: #ddd;
+        }
+        
+        .document-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .document-modal-section {
+            margin-bottom: 20px;
+        }
+        
+        .document-modal-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .document-modal-content {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .document-modal-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            background-color: #f9f9f9;
+        }
+        
+        .document-modal-meta {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .document-modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .document-modal-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        
+        .document-modal-button.primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .document-modal-button.primary:hover {
+            background-color: #2980b9;
+        }
+        
+        body.dark-mode .document-modal {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .document-modal-footer {
+            background-color: #222;
+            border-top: 1px solid #444;
+        }
+        
+        body.dark-mode .document-modal-label {
+            color: #aaa;
+        }
+        
+        body.dark-mode .document-modal-meta {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div>
+            <a href="index.html">Home</a>
+            <a href="blog.html">Blog</a>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+                <i id="darkModeIcon">🌙</i>
+                <span id="darkModeText">Dark Mode</span>
+            </div>
+            <button onclick="showForm()">Add Document</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search documents...">
+                <i>🔍</i>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="sort-dropdown">
+                    <select id="sortSelector" onchange="sortDocuments(this.value)">
+                        <option value="newest">Sort by: Newest</option>
+                        <option value="oldest">Sort by: Oldest</option>
+                        <option value="title">Sort by: Title (A-Z)</option>
+                        <option value="publisher">Sort by: Publisher</option>
+                    </select>
+                </div>
+                <div class="category-filter" id="categoryFilter">
+                    <button class="category-btn active" data-category="all">All</button>
+                    <button class="category-btn" data-category="Web Development">Web Development</button>
+                    <button class="category-btn" data-category="Programming Languages">Programming Languages</button>
+                    <button class="category-btn" data-category="AI & Machine Learning">AI & ML</button>
+                    <button class="category-btn" data-category="Cyber Security">Cyber Security</button>
+                    <button class="category-btn" data-category="Cloud Computing">Cloud Computing</button>
+                    <button class="category-btn" data-category="DevOps">DevOps</button>
+                    <button class="category-btn" data-category="Blockchain">Blockchain</button>
+                    <button class="category-btn" data-category="Mobile Development">Mobile Dev</button>
+                    <button class="category-btn" data-category="Data Science">Data Science</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="document-grid" id="documentGrid">
+            <div class="data-loading" id="dataLoading">
+                <div class="loading-spinner"></div>
+                <p>Loading documents...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Documentation Form -->
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-popup">
+            <div class="close-btn" onclick="closeForm()">✖</div>
+            <h3>Add New Documentation</h3>
+            
+            <div class="form-group">
+                <label for="docTitle">Title</label>
+                <input type="text" id="docTitle" name="docTitle" placeholder="Enter document title" oninput="trackChanges()">
+            </div>
+            
+            <div class="form-group">
+                <label for="docDescription">Description</label>
+                <textarea id="docDescription" name="docDescription" placeholder="Brief description of the documentation (max 250 chars)" maxlength="250" rows="4" oninput="updateCharCount(this); trackChanges()"></textarea>
+                <div id="charCount" class="char-count">0/250</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="docLink">Documentation URL</label>
+                <input type="url" id="docLink" name="docLink" placeholder="https://example.com/docs" oninput="trackChanges()">
+            </div>
+            
+            <div class="form-group">
+                <label for="docCategory">Category</label>
+                <select id="docCategory" name="docCategory" onchange="trackChanges()">
+                    <option value="">Select a category</option>
+                    <option>Web Development</option>
+                    <option>Programming Languages</option>
+                    <option>AI & Machine Learning</option>
+                    <option>Cyber Security</option>
+                    <option>Cloud Computing</option>
+                    <option>DevOps</option>
+                    <option>Blockchain</option>
+                    <option>Mobile Development</option>
+                    <option>Data Science</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="docPublisher">Your Name</label>
+                <input type="text" id="docPublisher" name="docPublisher" placeholder="Enter your name" oninput="trackChanges()">
+            </div>
+            
+            <div class="form-group">
+                <label for="docEmail">Email (Optional)</label>
+                <input type="email" id="docEmail" name="docEmail" placeholder="Get notified when your document is published" oninput="trackChanges()">
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Processing your submission...</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">All fields are required!</div>
+            <div class="success-message" id="successMessage">Document submitted successfully!</div>
+            
+            <button id="submitBtn" onclick="submitDocument()">Submit Document</button>
+        </div>
+    </div>
+
+    <script>
+        let formHasData = false;
+        let documents = [];
+        const scriptURL = "https://script.google.com/macros/s/AKfycbw6DVG7jk7Py6nlGMVH5UX251rM4ZD7MHeKQ2-rbcY19A3_hkuGAtYREZaxsb3qqxs/exec";
+        let activeCategory = "all";
+        let searchQuery = "";
+
+        // Load documents when page loads
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check for saved dark mode preference
+            const darkModePref = localStorage.getItem('darkMode');
+            if (darkModePref === 'enabled') {
+                document.body.classList.add('dark-mode');
+                updateDarkModeUI(true);
+            }
+            
+            // Set up form input listeners
+            const formInputs = document.querySelectorAll(".form-popup input, .form-popup textarea, .form-popup select");
+            formInputs.forEach(input => {
+                input.addEventListener("focus", function() {
+                    this.classList.remove("highlight");
+                });
+            });
+            
+            // Initialize character counter for description
+            const descriptionArea = document.getElementById("docDescription");
+            if (descriptionArea) {
+                updateCharCount(descriptionArea);
+                descriptionArea.addEventListener("input", function() {
+                    updateCharCount(this);
+                });
+            }
+            
+            // Set up search input
+            document.getElementById("searchInput").addEventListener("input", function() {
+                searchQuery = this.value.toLowerCase().trim();
+                filterDocuments();
+            });
+            
+            // Set up category filter buttons
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    activeCategory = this.getAttribute('data-category');
+                    filterDocuments();
+                });
+            });
+            
+            // Initial load of documents
+            loadDocuments();
+        });
+
+        function showForm() {
+            document.getElementById("formOverlay").style.display = "flex";
+        }
+
+        function closeForm() {
+            if (formHasData && !confirm("You have unsaved changes. Close anyway?")) {
+                return;
+            }
+            document.getElementById("formOverlay").style.display = "none";
+            resetForm();
+        }
+
+        function trackChanges() {
+            const inputs = document.querySelectorAll(".form-popup input, .form-popup textarea, .form-popup select");
+            formHasData = Array.from(inputs).some(input => input.value.trim() !== "");
+        }
+
+        function updateCharCount(textarea) {
+            const maxLength = textarea.getAttribute('maxlength');
+            const currentLength = textarea.value.length;
+            const charCountEl = document.getElementById('charCount');
+            
+            charCountEl.textContent = `${currentLength}/${maxLength}`;
+            
+            // Add visual feedback based on character count
+            charCountEl.className = 'char-count';
+            if (currentLength > maxLength * 0.8) {
+                charCountEl.classList.add('warning');
+            }
+            if (currentLength > maxLength * 0.95) {
+                charCountEl.classList.remove('warning');
+                charCountEl.classList.add('danger');
+            }
+        }
+        
+        function showFormError(message) {
+            const errorMessage = document.getElementById("errorMessage");
+            errorMessage.textContent = message;
+            errorMessage.style.display = "block";
+            
+            // Fade out error after 5 seconds
+            setTimeout(() => {
+                fadeOut(errorMessage);
+            }, 5000);
+        }
+        
+        function fadeOut(element) {
+            let opacity = 1;
+            const timer = setInterval(() => {
+                if (opacity <= 0.1) {
+                    clearInterval(timer);
+                    element.style.display = 'none';
+                    element.style.opacity = '1';
+                }
+                element.style.opacity = opacity;
+                opacity -= opacity * 0.1;
+            }, 50);
+        }
+        
+        function showFormSuccess(message) {
+            const successMessage = document.getElementById("successMessage");
+            successMessage.textContent = message || "Document submitted successfully!";
+            successMessage.style.display = "block";
+        }
+
+        function validateEmail(email) {
+            const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function validateUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function checkDuplicateUrl(url) {
+            try {
+                const response = await fetch(`${scriptURL}?action=checkUrl&url=${encodeURIComponent(url)}`);
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // If there's an error, log it but allow submission
+                if (data.result === "error") {
+                    console.error("Server error checking URL:", data.error);
+                    return false;
+                }
+                
+                return data.result === "duplicate";
+            } catch (error) {
+                console.error("Error checking duplicate URL:", error);
+                return false; // Allow submission on error
+            }
+        }
+
+        async function loadDocuments() {
+            try {
+                // Show loading indicator
+                document.getElementById("dataLoading").style.display = "block";
+                
+                console.log("Fetching documents from server...");
+                // Fetch approved documents from the server
+                const response = await fetch(`${scriptURL}?action=getApproved`, { cache: "no-store" });
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log("Received data from server:", data);
+                
+                if (data.result === "success") {
+                    documents = data.documents || [];
+                    console.log("Processed documents:", documents);
+                    
+                    if (documents.length === 0) {
+                        console.log("No documents found");
+                        document.getElementById("documentGrid").innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📄</div>
+                                <div class="empty-state-title">No Documents Available</div>
+                                <div class="empty-state-text">
+                                    Be the first to add a document to our collection!
+                                </div>
+                                <button class="empty-state-button" onclick="showForm()">Add Document</button>
+                            </div>
+                        `;
+                    } else {
+                        console.log(`Found ${documents.length} documents, filtering...`);
+                        filterDocuments();
+                    }
+                } else {
+                    console.error("Server returned error:", data.error);
+                    throw new Error(data.error || "Failed to load documents");
+                }
+            } catch (error) {
+                console.error("Error loading documents:", error);
+                document.getElementById("documentGrid").innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <div class="empty-state-title">Error Loading Documents</div>
+                        <div class="empty-state-text">
+                            There was an error loading the documents. Please try again later.
+                            <br>Error: ${error.message}
+                        </div>
+                        <button class="empty-state-button" onclick="loadDocuments()">Retry</button>
+                    </div>
+                `;
+            } finally {
+                document.getElementById("dataLoading").style.display = "none";
+            }
+        }
+
+        function filterDocuments() {
+            const grid = document.getElementById("documentGrid");
+            
+            console.log("Filtering documents with:", {
+                activeCategory,
+                searchQuery,
+                totalDocuments: documents.length
+            });
+            
+            // Filter documents by category and search query
+            const filteredDocs = documents.filter(doc => {
+                // Category filter
+                const categoryMatch = activeCategory === "all" || doc.docCategory === activeCategory;
+                
+                // Search filter
+                const searchMatch = searchQuery === "" || 
+                    doc.docTitle.toLowerCase().includes(searchQuery) || 
+                    doc.docDescription.toLowerCase().includes(searchQuery) || 
+                    doc.docPublisher.toLowerCase().includes(searchQuery);
+                
+                return categoryMatch && searchMatch;
+            });
+            
+            console.log(`Found ${filteredDocs.length} filtered documents`);
+            
+            // Clear current grid
+            grid.innerHTML = "";
+            
+            // If no documents found
+            if (filteredDocs.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-title">No Documents Found</div>
+                        <div class="empty-state-text">
+                            ${searchQuery ? `No documents match "${searchQuery}"` : ''}
+                            ${searchQuery && activeCategory !== "all" ? ' in ' : ''}
+                            ${activeCategory !== "all" ? `the "${activeCategory}" category.` : ''}
+                            ${(searchQuery || activeCategory !== "all") ? '<br>Try adjusting your search criteria.' : ''}
+                        </div>
+                        <button class="empty-state-button" onclick="resetFilters()">Reset Filters</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Add documents to grid
+            filteredDocs.forEach(doc => {
+                const date = new Date(doc.timestamp);
+                const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+                
+                const card = document.createElement("div");
+                card.className = "document-card";
+                
+                card.innerHTML = `
+                    <div class="category-badge">${doc.docCategory}</div>
+                    <div class="card-content">
+                        <div class="card-title">${doc.docTitle}</div>
+                        <div class="card-description">${doc.docDescription}</div>
+                        <div class="card-footer">
+                            <div class="card-publisher">By: ${doc.docPublisher}</div>
+                            <div class="card-date">${formattedDate}</div>
+                        </div>
+                        <div class="card-actions">
+                            <div class="card-btn details" onclick="showDocumentModal(${JSON.stringify(doc).replace(/"/g, '&quot;')})">Details</div>
+                            <div class="card-btn visit" onclick="window.open('${doc.docLink}', '_blank')">Visit</div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function resetFilters() {
+            // Reset search
+            document.getElementById("searchInput").value = "";
+            searchQuery = "";
+            
+            // Reset category
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-category') === 'all') {
+                    btn.classList.add('active');
+                }
+            });
+            activeCategory = "all";
+            
+            // Refresh documents
+            filterDocuments();
+        }
+
+        async function submitDocument() {
+            // Hide any previous messages
+            document.getElementById("errorMessage").style.display = "none";
+            document.getElementById("successMessage").style.display = "none";
+            
+            // Reset all highlight borders
+            document.querySelectorAll(".highlight").forEach(el => {
+                el.classList.remove("highlight");
+            });
+            
+            // Disable the submit button to prevent double submission
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+            
+            // Required fields validation
+            const requiredFields = ["docTitle", "docDescription", "docLink", "docCategory", "docPublisher"];
+            let isValid = true;
+            let firstInvalidField = null;
+
+            requiredFields.forEach(id => {
+                const input = document.getElementById(id);
+                if (!input.value.trim()) {
+                    input.classList.add("highlight");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = input;
+                }
+            });
+
+            if (!isValid) {
+                if (firstInvalidField) firstInvalidField.focus();
+                showFormError("Please fill in all required fields");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Document";
+                return;
+            }
+
+            // URL validation
+            const docLink = document.getElementById("docLink").value;
+            if (!validateUrl(docLink)) {
+                document.getElementById("docLink").classList.add("highlight");
+                document.getElementById("docLink").focus();
+                showFormError("Please enter a valid URL");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Document";
+                return;
+            }
+
+            // Description length validation
+            const docDescription = document.getElementById("docDescription").value;
+            if (docDescription.length > 250) {
+                document.getElementById("docDescription").classList.add("highlight");
+                document.getElementById("docDescription").focus();
+                showFormError("Description must be under 250 characters");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Document";
+                return;
+            }
+
+            // Email validation (if provided)
+            const docEmail = document.getElementById("docEmail").value;
+            if (docEmail && !validateEmail(docEmail)) {
+                document.getElementById("docEmail").classList.add("highlight");
+                document.getElementById("docEmail").focus();
+                showFormError("Please enter a valid email address");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Document";
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById("loading").style.display = "block";
+            
+            // Check for duplicate URL
+            try {
+                const isDuplicate = await checkDuplicateUrl(docLink);
+                if (isDuplicate) {
+                    document.getElementById("docLink").classList.add("highlight");
+                    document.getElementById("docLink").focus();
+                    showFormError("This URL already exists in our documentation");
+                    document.getElementById("loading").style.display = "none";
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit Document";
+                    return;
+                }
+            
+                // If all validations pass, prepare form data
+                const docTitle = document.getElementById("docTitle").value;
+                const docCategory = document.getElementById("docCategory").value;
+                const docPublisher = document.getElementById("docPublisher").value;
+
+                const formData = new FormData();
+                formData.append("docTitle", docTitle);
+                formData.append("docDescription", docDescription);
+                formData.append("docLink", docLink);
+                formData.append("docCategory", docCategory);
+                formData.append("docPublisher", docPublisher);
+                formData.append("docEmail", docEmail || ""); // Handle empty email
+
+                // Submit the form
+                const response = await fetch(scriptURL, {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.result === "success") {
+                    // Show success message and reset form
+                    showFormSuccess("Your document has been added successfully! It will be published after review.");
+                    resetForm();
+                    
+                    // Hide success message and close form after delay
+                    setTimeout(() => {
+                        closeForm();
+                        // Refresh documents list
+                        loadDocuments();
+                    }, 3000);
+                } else {
+                    throw new Error(data.error || "Unknown error occurred");
+                }
+            } catch (error) {
+                console.error("Submission error:", error);
+                showFormError(`Error: ${error.message}. Please try again.`);
+            } finally {
+                document.getElementById("loading").style.display = "none";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Document";
+            }
+        }
+
+        function resetForm() {
+            document.querySelectorAll(".form-popup input, .form-popup textarea, .form-popup select").forEach(input => {
+                input.value = "";
+                input.classList.remove("highlight");
+            });
+            
+            // Reset character count
+            const charCountEl = document.getElementById('charCount');
+            if (charCountEl) {
+                charCountEl.textContent = "0/250";
+                charCountEl.className = "char-count";
+            }
+            
+            // Hide all messages
+            document.getElementById("errorMessage").style.display = "none";
+            document.getElementById("successMessage").style.display = "none";
+            document.getElementById("loading").style.display = "none";
+            
+            // Reset submit button
+            const submitBtn = document.getElementById("submitBtn");
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Document";
+            }
+            
+            formHasData = false;
+        }
+
+        function sortDocuments(sortBy) {
+            console.log("Sorting documents by:", sortBy);
+            
+            if (documents.length === 0) return;
+            
+            switch(sortBy) {
+                case "newest":
+                    documents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    break;
+                case "oldest":
+                    documents.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                    break;
+                case "title":
+                    documents.sort((a, b) => a.docTitle.localeCompare(b.docTitle));
+                    break;
+                case "publisher":
+                    documents.sort((a, b) => a.docPublisher.localeCompare(b.docPublisher));
+                    break;
+            }
+            
+            filterDocuments();
+        }
+
+        function toggleDarkMode() {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            updateDarkModeUI(isDarkMode);
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        }
+
+        function updateDarkModeUI(isDarkMode) {
+            const icon = document.getElementById('darkModeIcon');
+            const text = document.getElementById('darkModeText');
+            
+            if (isDarkMode) {
+                icon.textContent = '☀️';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = 'Dark Mode';
+            }
+        }
+
+        function showDocumentModal(doc) {
+            // Close any existing modal first
+            const existingModal = document.getElementById("document-modal-overlay");
+            if (existingModal) {
+                document.body.removeChild(existingModal);
+            }
+            
+            const modalOverlay = document.createElement("div");
+            modalOverlay.className = "document-modal-overlay";
+            modalOverlay.id = "document-modal-overlay";
+            modalOverlay.style.display = "flex";
+            
+            // Stop propagation on the modal itself to prevent closing when clicking inside
+            modalOverlay.onclick = function(e) {
+                if (e.target === modalOverlay) {
+                    modalOverlay.style.display = "none";
+                }
+            };
+
+            const modal = document.createElement("div");
+            modal.className = "document-modal";
+            modal.onclick = function(e) {
+                e.stopPropagation();
+            };
+
+            const header = document.createElement("div");
+            header.className = "document-modal-header";
+
+            const title = document.createElement("h2");
+            title.className = "document-modal-title";
+            title.textContent = doc.docTitle;
+
+            const closeButton = document.createElement("span");
+            closeButton.className = "document-modal-close";
+            closeButton.textContent = "✖";
+            closeButton.onclick = function() {
+                modalOverlay.style.display = "none";
+            };
+
+            header.appendChild(title);
+            header.appendChild(closeButton);
+
+            const body = document.createElement("div");
+            body.className = "document-modal-body";
+
+            const section1 = document.createElement("div");
+            section1.className = "document-modal-section";
+
+            const label1 = document.createElement("div");
+            label1.className = "document-modal-label";
+            label1.textContent = "Description:";
+
+            const content1 = document.createElement("div");
+            content1.className = "document-modal-content";
+            content1.textContent = doc.docDescription;
+
+            section1.appendChild(label1);
+            section1.appendChild(content1);
+
+            const section2 = document.createElement("div");
+            section2.className = "document-modal-section";
+
+            const label2 = document.createElement("div");
+            label2.className = "document-modal-label";
+            label2.textContent = "Category:";
+
+            const content2 = document.createElement("div");
+            content2.className = "document-modal-content";
+            content2.textContent = doc.docCategory;
+
+            section2.appendChild(label2);
+            section2.appendChild(content2);
+
+            const section3 = document.createElement("div");
+            section3.className = "document-modal-section";
+
+            const label3 = document.createElement("div");
+            label3.className = "document-modal-label";
+            label3.textContent = "Publisher:";
+
+            const content3 = document.createElement("div");
+            content3.className = "document-modal-content";
+            content3.textContent = doc.docPublisher;
+
+            section3.appendChild(label3);
+            section3.appendChild(content3);
+
+            const section4 = document.createElement("div");
+            section4.className = "document-modal-section";
+
+            const label4 = document.createElement("div");
+            label4.className = "document-modal-label";
+            label4.textContent = "Date Added:";
+
+            const content4 = document.createElement("div");
+            content4.className = "document-modal-content";
+            content4.textContent = new Date(doc.timestamp).toLocaleString();
+
+            section4.appendChild(label4);
+            section4.appendChild(content4);
+
+            body.appendChild(section1);
+            body.appendChild(section2);
+            body.appendChild(section3);
+            body.appendChild(section4);
+
+            const footer = document.createElement("div");
+            footer.className = "document-modal-footer";
+
+            const meta = document.createElement("div");
+            meta.className = "document-modal-meta";
+            meta.textContent = `ID: ${doc.id || 'N/A'}`;
+
+            const actions = document.createElement("div");
+            actions.className = "document-modal-actions";
+
+            const viewButton = document.createElement("button");
+            viewButton.className = "document-modal-button primary";
+            viewButton.textContent = "Visit Documentation";
+            viewButton.onclick = function() {
+                window.open(doc.docLink, '_blank');
+            };
+
+            const closeButtonFooter = document.createElement("button");
+            closeButtonFooter.className = "document-modal-button";
+            closeButtonFooter.textContent = "Close";
+            closeButtonFooter.onclick = function() {
+                modalOverlay.style.display = "none";
+            };
+
+            actions.appendChild(viewButton);
+            actions.appendChild(closeButtonFooter);
+
+            footer.appendChild(meta);
+            footer.appendChild(actions);
+
+            modal.appendChild(header);
+            modal.appendChild(body);
+            modal.appendChild(footer);
+
+            modalOverlay.appendChild(modal);
+            document.body.appendChild(modalOverlay);
+        }
+    </script>
+
+</body>
+</html>
