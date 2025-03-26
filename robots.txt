@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skopos-899.github.io/Documentation-Hub/sitemap.xml
